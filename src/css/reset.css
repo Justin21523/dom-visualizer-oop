@@ -1,0 +1,45 @@
+/* src/css/reset.css */
+
+/* 全域盒模型設定 (Box Sizing
+預設 margin/padding 歸零 (Margin & Padding Reset) */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* HTML5 結構元素顯示 (HTML5 Elements Display) */
+article, aside, details, figcaption, figure,
+footer, header, main, nav, section, summary {
+  display: block;
+}
+
+/* 列表樣式移除 (List Style) */
+ul, ol {
+  list-style: none;
+}
+
+/* 表格邊框合併 (Table Reset) */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* 引用樣式重設 (Blockquote & Quote) */
+blockquote, q {
+  quotes: none;
+}
+blockquote::before,
+blockquote::after,
+q::before,
+q::after {
+  content: "";
+  content: none;
+}
+
+/* 媒體元素預設 (Media Elements) */
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
