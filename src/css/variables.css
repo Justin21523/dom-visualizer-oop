@@ -1,34 +1,54 @@
-/* variables.css — 全域 CSS 變數 (Custom Properties) */
-
+/* src/css/variables.css — 全域 CSS 變數 (Design Tokens & Custom Properties) */
 :root {
-  /* 顏色調色盤 (Color Palette) */
+  /* ===== 色彩調色盤 (Color Palette) ===== */
+  /* 主色 Primary: #3498db，穩重且友好，用於主要按鈕、連結、強調標題 */
   --color-primary: #3498db;
+  /* 輔助色 Secondary: #2ecc71，用於成功狀態提示或正向標籤 */
   --color-secondary: #2ecc71;
+  /* 點綴色 Accent: #e74c3c，警告或高亮重點使用 */
   --color-accent: #e74c3c;
+  /* 背景色 Background: #f5f5f5，緩衝主色銳利感，作為全局底色 */
   --color-background: #f5f5f5;
+  /* 表面色 Surface: #ffffff，用於卡片、模態框等容器 */
   --color-surface: #ffffff;
+  /* 主要文字色 Primary Text: #333333，高對比且減少閱讀疲勞 */
   --color-text-primary: #333333;
+  /* 次要文字色 Secondary Text: #666666，用於說明文字或次要標籤 */
   --color-text-secondary: #666666;
 
-  /* 間距 (Spacing) */
+  /* ===== 間距刻度 (Spacing Scale) ===== */
+  /* 基準間距：1rem (16px) */
   --spacing-unit: 1rem;
+  /* 微間距：0.5 * 基準，用於細小留白 */
   --spacing-xs: calc(var(--spacing-unit) * 0.5);
+  /* 小間距：0.75 * 基準，用於次要留白 */
   --spacing-sm: calc(var(--spacing-unit) * 0.75);
+  /* 中等間距：1 * 基準，用於常見留白 */
   --spacing-md: var(--spacing-unit);
+  /* 大間距：1.5 * 基準，用於元件間隔 */
   --spacing-lg: calc(var(--spacing-unit) * 1.5);
+  /* 特大間距：2 * 基準，用於區塊之間 */
   --spacing-xl: calc(var(--spacing-unit) * 2);
 
-  /* 字體 (Typography) */
+  /* ===== 排版字級 (Typography) ===== */
+  /* 基本字體：Helvetica Neue, Arial, sans-serif */
   --font-family-base: 'Helvetica Neue', Arial, sans-serif;
+  /* 正文字級：16px，最佳可讀性 */
   --font-size-base: 16px;
-  --font-size-sm: 0.875rem; /* 14px */
-  --font-size-lg: 1.125rem; /* 18px */
+  /* 小字：0.875rem (14px)，用於輔助說明 */
+  --font-size-sm: 0.875rem;
+  /* 大字：1.125rem (18px)，用於標題或強調 */
+  --font-size-lg: 1.125rem;
 
-  /* 邊框與圓角 (Borders & Radius) */
+  /* ===== 邊框與圓角 (Borders & Radius) ===== */
+  /* 微圓角：0.25rem (4px)，統一卡片和按鈕 */
   --border-radius: 0.25rem;
+  /* 大圓角：0.5rem (8px)，強調交互元素 */
   --border-radius-lg: 0.5rem;
 
-  /* 動畫過渡 (Transitions) */
+  /* ===== 過渡效果 (Transitions) ===== */
+  /* 過渡時長：0.3s，平衡流暢與效率 */
   --transition-duration: 0.3s;
+  /* 緩動函式：ease-in-out，開頭與結尾均緩動 */
   --transition-easing: ease-in-out;
 }
