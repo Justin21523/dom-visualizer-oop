@@ -1,0 +1,25 @@
+/* ===== src/styles/themes/dark.css ===== */
+.dark-theme {
+  --text-primary: var(--secondary-100);
+  --text-secondary: var(--secondary-300);
+  --text-tertiary: var(--secondary-500);
+  --text-inverse: var(--secondary-900);
+
+  --bg-primary: var(--secondary-900);
+  --bg-secondary: var(--secondary-800);
+  --bg-tertiary: var(--secondary-700);
+  --bg-inverse: var(--white);
+
+  --border-primary: var(--secondary-700);
+  --border-secondary: var(--secondary-600);
+
+  --interactive-hover: var(--secondary-800);
+  --interactive-active: var(--secondary-700);
+
+  --canvas-bg: var(--secondary-800);
+  --canvas-border: var(--secondary-600);
+  --canvas-grid: var(--secondary-700);
+
+  --input-bg: var(--secondary-800);
+  --input-border: var(--secondary-600);
+}

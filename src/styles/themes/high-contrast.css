@@ -1,0 +1,8 @@
+/* ===== src/styles/themes/high-contrast.css ===== */
+.high-contrast-theme {
+  --text-primary: var(--black);
+  --text-secondary: var(--black);
+  --bg-primary: var(--white);
+  --border-primary: var(--black);
+  --border-secondary: var(--black);
+}
