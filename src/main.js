@@ -1,13 +1,17 @@
+/* src/main.js */
 /**
- * Main application entry point
- * Initializes the DOM Visualizer OOP learning platform
+ * Updated Main Application Entry Point
+ * Enhanced with Foundation Module integration
  *
- * @fileoverview Entry point for the DOM Visualizer application
- * @version 1.0.0
+ * @fileoverview Entry point for the DOM Visualizer application with module support
+ * @version 1.1.0
  */
 
 // Import main stylesheet
 import './styles/main.css';
+
+// Import Foundation Module
+import FoundationModule from './modules/foundation/index.js';
 
 /**
  * Application initialization configuration
@@ -15,10 +19,20 @@ import './styles/main.css';
 const APP_CONFIG = {
   container: '#app',
   development: import.meta.env.DEV,
-  version: import.meta.env.VITE_APP_VERSION || '1.0.0',
+  version: import.meta.env.VITE_APP_VERSION || '1.1.0',
   enableDevTools: import.meta.env.DEV,
   enableAnalytics: import.meta.env.PROD
 };
+
+/**
+ * Module registry for managing different learning modules
+ */
+const MODULE_REGISTRY = new Map();
+
+/**
+ * Currently active module instance
+ */
+let currentModule = null;
 
 /**
  * Initialize the application when DOM is ready
@@ -34,6 +48,9 @@ async function initializeApp() {
     // Initialize basic functionality
     await initializeBasicApp();
 
+    // Register available modules
+    await registerModules();
+
     // Hide loading screen and show app
     hideLoadingScreen();
     showApplication();
@@ -45,8 +62,72 @@ async function initializeApp() {
 
     console.log('🚀 DOM Visualizer OOP initialized successfully');
   } catch (error) {
-    console.error('❌ Failed to initialize application:', error);
+    console.error('� Failed to initialize application:', error);
     showErrorScreen(error);
+  }
+}
+
+/**
+ * Register all available modules
+ */
+async function registerModules() {
+  try {
+    // Register Foundation Module
+    MODULE_REGISTRY.set('foundation', {
+      name: 'foundation',
+      title: 'Foundation Module',
+      description: 'Learn DOM container relationships',
+      icon: '🏗️',
+      moduleClass: FoundationModule,
+      instance: null
+    });
+
+    // Register placeholder modules for future implementation
+    const placeholderModules = [
+      {
+        name: 'events',
+        title: 'Events Module',
+        description: 'Master event flow and delegation',
+        icon: '⚡'
+      },
+      {
+        name: 'dom',
+        title: 'DOM Module',
+        description: 'Manipulate and inspect DOM elements',
+        icon: '🌳'
+      },
+      {
+        name: 'boxmodel',
+        title: 'Box Model Module',
+        description: 'Visualize CSS layout and positioning',
+        icon: '📦'
+      },
+      {
+        name: 'performance',
+        title: 'Performance Module',
+        description: 'Monitor rendering performance',
+        icon: '🚀'
+      },
+      {
+        name: 'learning',
+        title: 'Learning Module',
+        description: 'Interactive challenges',
+        icon: '🎯'
+      }
+    ];
+
+    placeholderModules.forEach(module => {
+      MODULE_REGISTRY.set(module.name, {
+        ...module,
+        moduleClass: null, // Placeholder
+        instance: null
+      });
+    });
+
+    console.log('✅ Modules registered:', Array.from(MODULE_REGISTRY.keys()));
+  } catch (error) {
+    console.error('❌ Failed to register modules:', error);
+    throw error;
   }
 }
 
@@ -72,9 +153,9 @@ function setupModuleNavigation() {
   // Add click handlers for module cards
   moduleCards.forEach(card => {
     card.addEventListener('click', e => {
-      const module = card.dataset.module;
-      if (module) {
-        navigateToModule(module);
+      const moduleName = card.dataset.module;
+      if (moduleName) {
+        navigateToModule(moduleName);
       }
     });
   });
@@ -83,11 +164,16 @@ function setupModuleNavigation() {
   navLinks.forEach(link => {
     link.addEventListener('click', e => {
       e.preventDefault();
-      const module = link.dataset.module;
-      if (module) {
-        navigateToModule(module);
+      const moduleName = link.dataset.module;
+      if (moduleName) {
+        navigateToModule(moduleName);
       }
     });
+  });
+
+  // Listen for navigation events from modules
+  document.addEventListener('navigation:back', () => {
+    navigateToHome();
   });
 }
 
@@ -95,17 +181,160 @@ function setupModuleNavigation() {
  * Navigate to a specific module
  * @param {string} moduleName - Name of the module to navigate to
  */
-function navigateToModule(moduleName) {
-  console.log(`Navigating to ${moduleName} module`);
+async function navigateToModule(moduleName) {
+  try {
+    console.log(`🧭 Navigating to ${moduleName} module`);
+
+    // Check if module exists
+    const moduleConfig = MODULE_REGISTRY.get(moduleName);
+    if (!moduleConfig) {
+      console.error(`Module "${moduleName}" not found`);
+      showModulePlaceholder(moduleName);
+      return;
+    }
+
+    // Update URL
+    window.history.pushState({ module: moduleName }, '', `#${moduleName}`);
+
+    // Update active navigation
+    updateActiveNavigation(moduleName);
+
+    // Deactivate current module if any
+    if (currentModule) {
+      await deactivateCurrentModule();
+    }
+
+    // Load and activate the new module
+    if (moduleConfig.moduleClass) {
+      await loadAndActivateModule(moduleName, moduleConfig);
+    } else {
+      showModulePlaceholder(moduleName);
+    }
+  } catch (error) {
+    console.error(`❌ Failed to navigate to module ${moduleName}:`, error);
+    showErrorMessage(`Failed to load ${moduleName} module`);
+  }
+}
+
+/**
+ * Load and activate a module
+ * @param {string} moduleName - Module name
+ * @param {Object} moduleConfig - Module configuration
+ */
+async function loadAndActivateModule(moduleName, moduleConfig) {
+  try {
+    const moduleContainer = document.getElementById('module-container');
+
+    // Clear container
+    moduleContainer.innerHTML = '';
+
+    // Create module instance if not exists
+    if (!moduleConfig.instance) {
+      console.log(`🏗️ Creating ${moduleName} module instance`);
+      moduleConfig.instance = new moduleConfig.moduleClass(moduleContainer, {
+        theme: getCurrentTheme(),
+        enableAnimation: !isReducedMotion()
+      });
+
+      // Initialize the module
+      await moduleConfig.instance.init();
+    }
+
+    // Activate the module
+    await moduleConfig.instance.activate();
+    currentModule = moduleConfig.instance;
+
+    console.log(`✅ ${moduleName} module activated`);
+
+    // Track module usage
+    trackModuleUsage(moduleName);
+  } catch (error) {
+    console.error(`❌ Failed to load module ${moduleName}:`, error);
+    showModulePlaceholder(moduleName, `Error loading module: ${error.message}`);
+  }
+}
+
+/**
+ * Deactivate the current module
+ */
+async function deactivateCurrentModule() {
+  if (currentModule && typeof currentModule.deactivate === 'function') {
+    try {
+      await currentModule.deactivate();
+      console.log('✅ Current module deactivated');
+    } catch (error) {
+      console.error('❌ Error deactivating current module:', error);
+    }
+  }
+  currentModule = null;
+}
+
+/**
+ * Navigate to home (welcome screen)
+ */
+function navigateToHome() {
+  console.log('🏠 Navigating to home');
 
   // Update URL
-  window.history.pushState({}, '', `#${moduleName}`);
+  window.history.pushState({}, '', '#');
 
-  // Update active navigation
-  updateActiveNavigation(moduleName);
+  // Update navigation
+  updateActiveNavigation(null);
 
-  // Show module placeholder
-  showModulePlaceholder(moduleName);
+  // Deactivate current module
+  if (currentModule) {
+    deactivateCurrentModule();
+  }
+
+  // Show welcome screen
+  showWelcomeScreen();
+}
+
+/**
+ * Show welcome screen
+ */
+function showWelcomeScreen() {
+  const moduleContainer = document.getElementById('module-container');
+
+  // Get updated module info
+  const modules = Array.from(MODULE_REGISTRY.values());
+
+  moduleContainer.innerHTML = `
+    <div id="welcome-screen" class="welcome-screen">
+      <div class="welcome-content">
+        <h1 class="welcome-title">Welcome to DOM Visualizer</h1>
+        <p class="welcome-subtitle">
+          Master JavaScript DOM manipulation and browser APIs through interactive visualizations
+        </p>
+
+        <div class="welcome-modules">
+          ${modules
+            .map(
+              module => `
+            <div class="module-card ${module.moduleClass ? '' : 'module-placeholder'}" data-module="${module.name}">
+              <div class="module-icon">${module.icon}</div>
+              <h3 class="module-title">${module.title}</h3>
+              <p class="module-description">${module.description}</p>
+              ${!module.moduleClass ? '<div class="coming-soon-badge">Coming Soon</div>' : ''}
+            </div>
+          `
+            )
+            .join('')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Re-bind module card events for the new content
+  const moduleCards = moduleContainer.querySelectorAll('.module-card');
+  moduleCards.forEach(card => {
+    card.addEventListener('click', e => {
+      const moduleName = card.dataset.module;
+      if (moduleName && !card.classList.contains('module-placeholder')) {
+        navigateToModule(moduleName);
+      }
+    });
+  });
 }
 
 /**
@@ -119,61 +348,24 @@ function updateActiveNavigation(moduleName) {
   });
 
   // Add active class to current module
-  const activeLink = document.querySelector(`[data-module="${moduleName}"]`);
-  if (activeLink) {
-    activeLink.classList.add('active');
+  if (moduleName) {
+    const activeLink = document.querySelector(`[data-module="${moduleName}"]`);
+    if (activeLink && activeLink.classList.contains('nav-link')) {
+      activeLink.classList.add('active');
+    }
   }
 }
 
 /**
  * Show module placeholder content
  * @param {string} moduleName - Module name to display
+ * @param {string} errorMessage - Optional error message
  */
-function showModulePlaceholder(moduleName) {
+function showModulePlaceholder(moduleName, errorMessage = null) {
   const moduleContainer = document.getElementById('module-container');
+  const moduleConfig = MODULE_REGISTRY.get(moduleName);
 
-  const moduleInfo = {
-    foundation: {
-      title: 'Foundation Module',
-      description: 'Learn DOM basics and viewport relationships',
-      features: [
-        'DOM Metrics Visualization',
-        'Viewport Management',
-        'Scroll Tracking'
-      ]
-    },
-    events: {
-      title: 'Events Module',
-      description: 'Master event flow and delegation patterns',
-      features: [
-        'Event Flow Visualization',
-        'Event Delegation Demo',
-        'Custom Events'
-      ]
-    },
-    dom: {
-      title: 'DOM Module',
-      description: 'Manipulate and inspect DOM elements',
-      features: ['DOM Tree Editor', 'Attribute Inspector', 'Selector Tester']
-    },
-    boxmodel: {
-      title: 'Box Model Module',
-      description: 'Visualize CSS layout and positioning',
-      features: ['3D Box Model', 'Layout Comparator', 'Responsive Simulator']
-    },
-    performance: {
-      title: 'Performance Module',
-      description: 'Monitor and optimize rendering performance',
-      features: ['FPS Monitor', 'Memory Leak Detector', 'Render Pipeline']
-    },
-    learning: {
-      title: 'Learning Module',
-      description: 'Test your skills with interactive challenges',
-      features: ['Challenge Engine', 'Progress Tracker', 'Achievement System']
-    }
-  };
-
-  const info = moduleInfo[moduleName] || {
+  const moduleInfo = moduleConfig || {
     title: 'Module',
     description: 'Coming soon...',
     features: []
@@ -181,26 +373,116 @@ function showModulePlaceholder(moduleName) {
 
   moduleContainer.innerHTML = `
     <div class="module-content">
-      <div class="module-header">
-        <h1 class="module-title">${info.title}</h1>
-        <p class="module-description">${info.description}</p>
+      <div class="breadcrumb">
+        <span class="breadcrumb-item">
+          <a href="#" class="back-button">← Back to Home</a>
+        </span>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-item active">${moduleInfo.title}</span>
       </div>
 
-      <div class="module-features">
-        <h3>Features:</h3>
-        <ul class="feature-list">
-          ${info.features.map(feature => `<li>${feature}</li>`).join('')}
-        </ul>
+      <div class="module-header">
+        <h1 class="module-title">${moduleInfo.title}</h1>
+        <p class="module-description">${moduleInfo.description}</p>
       </div>
+
+      ${
+        errorMessage
+          ? `
+        <div class="error-message">
+          <h3>⚠️ Error</h3>
+          <p>${errorMessage}</p>
+        </div>
+      `
+          : ''
+      }
 
       <div class="module-placeholder">
         <div class="placeholder-content">
           <h3>🚧 Under Development</h3>
           <p>This module is currently being built. Check back soon for interactive content!</p>
+          ${
+            moduleConfig && moduleConfig.moduleClass
+              ? `
+            <button class="retry-button" onclick="window.location.reload()">
+              🔄 Retry Loading
+            </button>
+          `
+              : ''
+          }
         </div>
       </div>
     </div>
   `;
+
+  // Setup back button
+  const backButton = moduleContainer.querySelector('.back-button');
+  if (backButton) {
+    backButton.addEventListener('click', e => {
+      e.preventDefault();
+      navigateToHome();
+    });
+  }
+}
+
+/**
+ * Get current theme
+ * @returns {string} Current theme name
+ */
+function getCurrentTheme() {
+  return document.body.classList.contains('dark-theme') ? 'dark' : 'light';
+}
+
+/**
+ * Check if reduced motion is preferred
+ * @returns {boolean} True if reduced motion is preferred
+ */
+function isReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+/**
+ * Track module usage for analytics
+ * @param {string} moduleName - Module name
+ */
+function trackModuleUsage(moduleName) {
+  // Simple usage tracking
+  const usage = JSON.parse(localStorage.getItem('module-usage') || '{}');
+  usage[moduleName] = (usage[moduleName] || 0) + 1;
+  usage[`${moduleName}-last-visit`] = Date.now();
+  localStorage.setItem('module-usage', JSON.stringify(usage));
+}
+
+/**
+ * Show error message
+ * @param {string} message - Error message
+ */
+function showErrorMessage(message) {
+  // Create a simple toast notification
+  const toast = document.createElement('div');
+  toast.className = 'error-toast';
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--error-500);
+    color: white;
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-md);
+    z-index: var(--z-index-toast);
+    animation: slideIn 0.3s ease-out;
+  `;
+
+  document.body.appendChild(toast);
+
+  // Auto-remove after 5 seconds
+  setTimeout(() => {
+    if (toast.parentNode) {
+      toast.style.animation = 'slideOut 0.3s ease-out forwards';
+      setTimeout(() => toast.remove(), 300);
+    }
+  }, 5000);
 }
 
 /**
@@ -211,10 +493,16 @@ function setupThemeToggle() {
 
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark-theme');
-      localStorage.setItem(
-        'theme',
-        document.body.classList.contains('dark-theme') ? 'dark' : 'light'
+      const isDark = document.body.classList.toggle('dark-theme');
+      const newTheme = isDark ? 'dark' : 'light';
+
+      localStorage.setItem('theme', newTheme);
+
+      // Notify current module of theme change
+      document.dispatchEvent(
+        new CustomEvent('theme:changed', {
+          detail: { theme: newTheme }
+        })
       );
     });
 
@@ -251,6 +539,99 @@ function setupSettingsModal() {
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && !settingsModal.classList.contains('hidden')) {
         closeModal();
+      }
+    });
+
+    // Setup settings controls
+    setupSettingsControls();
+  }
+}
+
+/**
+ * Setup settings controls
+ */
+function setupSettingsControls() {
+  // Theme selector
+  const themeSelect = document.getElementById('theme-select');
+  if (themeSelect) {
+    themeSelect.value = getCurrentTheme();
+    themeSelect.addEventListener('change', e => {
+      const theme = e.target.value;
+
+      if (theme === 'auto') {
+        // Use system preference
+        const prefersDark = window.matchMedia(
+          '(prefers-color-scheme: dark)'
+        ).matches;
+        document.body.classList.toggle('dark-theme', prefersDark);
+        localStorage.setItem('theme', 'auto');
+      } else {
+        document.body.classList.toggle('dark-theme', theme === 'dark');
+        localStorage.setItem('theme', theme);
+      }
+
+      // Notify current module
+      document.dispatchEvent(
+        new CustomEvent('theme:changed', {
+          detail: { theme: getCurrentTheme() }
+        })
+      );
+    });
+  }
+
+  // Animation speed
+  const animationSpeed = document.getElementById('animation-speed');
+  const animationValue = document.querySelector('.setting-value');
+  if (animationSpeed && animationValue) {
+    const savedSpeed = localStorage.getItem('animation-speed') || '1';
+    animationSpeed.value = savedSpeed;
+    animationValue.textContent = `${savedSpeed}x`;
+
+    animationSpeed.addEventListener('input', e => {
+      const speed = e.target.value;
+      animationValue.textContent = `${speed}x`;
+      localStorage.setItem('animation-speed', speed);
+
+      // Apply animation speed globally
+      document.documentElement.style.setProperty('--animation-speed', speed);
+    });
+
+    // Apply saved speed
+    document.documentElement.style.setProperty('--animation-speed', savedSpeed);
+  }
+
+  // Reduced motion
+  const reduceMotion = document.getElementById('reduce-motion');
+  if (reduceMotion) {
+    reduceMotion.checked = localStorage.getItem('reduce-motion') === 'true';
+    reduceMotion.addEventListener('change', e => {
+      const isReduced = e.target.checked;
+      localStorage.setItem('reduce-motion', isReduced.toString());
+
+      if (isReduced) {
+        document.documentElement.style.setProperty('--transition-fast', '0ms');
+        document.documentElement.style.setProperty('--transition-base', '0ms');
+        document.documentElement.style.setProperty('--transition-slow', '0ms');
+      } else {
+        document.documentElement.style.removeProperty('--transition-fast');
+        document.documentElement.style.removeProperty('--transition-base');
+        document.documentElement.style.removeProperty('--transition-slow');
+      }
+    });
+  }
+
+  // Show FPS counter
+  const showFPS = document.getElementById('show-fps');
+  if (showFPS) {
+    showFPS.checked = localStorage.getItem('show-fps') === 'true';
+    showFPS.addEventListener('change', e => {
+      const shouldShow = e.target.checked;
+      localStorage.setItem('show-fps', shouldShow.toString());
+
+      const devTools = document.getElementById('dev-tools');
+      if (devTools) {
+        devTools.style.display =
+          shouldShow || APP_CONFIG.development ? 'block' : 'none';
       }
     });
   }
@@ -302,6 +683,9 @@ function showApplication() {
       element.classList.remove('hidden');
     }
   });
+
+  // Show welcome screen by default
+  showWelcomeScreen();
 }
 
 /**
@@ -343,6 +727,9 @@ async function initializeDevTools() {
   try {
     const devTools = document.getElementById('dev-tools');
     if (devTools) {
+      const showFPS = localStorage.getItem('show-fps') === 'true';
+      devTools.style.display =
+        showFPS || APP_CONFIG.development ? 'block' : 'none';
       devTools.classList.remove('hidden');
 
       // Initialize FPS counter
@@ -358,6 +745,15 @@ async function initializeDevTools() {
           const fpsCounter = document.getElementById('fps-counter');
           if (fpsCounter) {
             fpsCounter.textContent = fps;
+
+            // Color code FPS
+            if (fps >= 55) {
+              fpsCounter.style.color = 'var(--success-500)';
+            } else if (fps >= 30) {
+              fpsCounter.style.color = 'var(--warning-500)';
+            } else {
+              fpsCounter.style.color = 'var(--error-500)';
+            }
           }
 
           frames = 0;
@@ -379,6 +775,15 @@ async function initializeDevTools() {
           const memoryElement = document.getElementById('memory-usage');
           if (memoryElement) {
             memoryElement.textContent = `${memoryUsage} MB`;
+
+            // Color code memory usage
+            if (memoryUsage < 50) {
+              memoryElement.style.color = 'var(--success-500)';
+            } else if (memoryUsage < 100) {
+              memoryElement.style.color = 'var(--warning-500)';
+            } else {
+              memoryElement.style.color = 'var(--error-500)';
+            }
           }
         }, 1000);
       }
@@ -386,15 +791,37 @@ async function initializeDevTools() {
       // Initialize state debugger
       const stateDebug = document.getElementById('state-debug');
       if (stateDebug) {
-        stateDebug.textContent = JSON.stringify(
-          {
-            currentModule: 'welcome',
-            theme: localStorage.getItem('theme') || 'light',
-            initialized: true
-          },
-          null,
-          2
-        );
+        const updateStateDebug = () => {
+          const state = {
+            currentModule: currentModule
+              ? currentModule.constructor.name
+              : null,
+            activeModules: Array.from(MODULE_REGISTRY.keys()).filter(
+              name => MODULE_REGISTRY.get(name).instance
+            ),
+            theme: getCurrentTheme(),
+            url: window.location.hash,
+            performance: performance.memory
+              ? {
+                  usedJSHeapSize:
+                    Math.round(
+                      performance.memory.usedJSHeapSize / 1024 / 1024
+                    ) + 'MB',
+                  totalJSHeapSize:
+                    Math.round(
+                      performance.memory.totalJSHeapSize / 1024 / 1024
+                    ) + 'MB'
+                }
+              : 'N/A',
+            timestamp: new Date().toISOString()
+          };
+
+          stateDebug.textContent = JSON.stringify(state, null, 2);
+        };
+
+        // Update state debug info every 2 seconds
+        updateStateDebug();
+        setInterval(updateStateDebug, 2000);
       }
 
       // Toggle dev panel
@@ -479,17 +906,43 @@ function initializePerformanceMonitoring() {
  */
 window.addEventListener('popstate', event => {
   const hash = window.location.hash.slice(1);
-  if (hash) {
+  if (hash && MODULE_REGISTRY.has(hash)) {
     navigateToModule(hash);
   } else {
-    // Show welcome screen
-    const moduleContainer = document.getElementById('module-container');
-    const welcomeScreen = document.getElementById('welcome-screen');
-    if (moduleContainer && welcomeScreen) {
-      moduleContainer.innerHTML = '';
-      moduleContainer.appendChild(welcomeScreen);
+    navigateToHome();
+  }
+});
+
+/**
+ * Handle visibility change (page focus/blur)
+ */
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    // Page is hidden - pause expensive operations
+    if (currentModule && typeof currentModule.pause === 'function') {
+      currentModule.pause();
+    }
+  } else {
+    // Page is visible - resume operations
+    if (currentModule && typeof currentModule.resume === 'function') {
+      currentModule.resume();
     }
   }
+});
+
+/**
+ * Cleanup on page unload
+ */
+window.addEventListener('beforeunload', () => {
+  // Cleanup current module
+  if (currentModule && typeof currentModule.destroy === 'function') {
+    currentModule.destroy();
+  }
+
+  // Save any pending state
+  const usage = JSON.parse(localStorage.getItem('module-usage') || '{}');
+  usage['app-last-session'] = Date.now();
+  localStorage.setItem('module-usage', JSON.stringify(usage));
 });
 
 /**
@@ -504,9 +957,24 @@ async function main() {
 
   // Handle initial URL hash
   const hash = window.location.hash.slice(1);
-  if (hash) {
+  if (hash && MODULE_REGISTRY.has(hash)) {
     setTimeout(() => navigateToModule(hash), 100);
   }
+}
+
+/**
+ * Export for debugging in development
+ */
+if (APP_CONFIG.development) {
+  window.__DOM_VISUALIZER_DEBUG__ = {
+    config: APP_CONFIG,
+    modules: MODULE_REGISTRY,
+    currentModule: () => currentModule,
+    navigateToModule,
+    navigateToHome,
+    reinitialize: initializeApp,
+    showError: showErrorScreen
+  };
 }
 
 // Start the application
@@ -514,13 +982,3 @@ main().catch(error => {
   console.error('Critical application error:', error);
   showErrorScreen(error);
 });
-
-// Export for debugging in development
-if (APP_CONFIG.development) {
-  window.__DOM_VISUALIZER_DEBUG__ = {
-    config: APP_CONFIG,
-    reinitialize: initializeApp,
-    showError: showErrorScreen,
-    navigateToModule
-  };
-}
