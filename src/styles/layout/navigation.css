@@ -1,0 +1,208 @@
+/**
+ * Navigation specific styles
+ * Module navigation and breadcrumbs
+ */
+
+/* ===== MODULE CONTENT STYLES ===== */
+.module-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+}
+
+.module-header {
+  text-align: center;
+  margin-bottom: var(--space-12);
+}
+
+.module-title {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-400));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.module-description {
+  font-size: var(--font-size-xl);
+  color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ===== MODULE FEATURES ===== */
+.module-features {
+  background: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-8);
+  border: 1px solid var(--border-primary);
+}
+
+.module-features h3 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.feature-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.feature-list li::before {
+  content: "✨";
+  font-size: var(--font-size-base);
+  flex-shrink: 0;
+}
+
+/* ===== MODULE PLACEHOLDER ===== */
+.module-placeholder {
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  text-align: center;
+  border: 2px dashed var(--border-secondary);
+  margin-top: var(--space-8);
+}
+
+.placeholder-content h3 {
+  font-size: var(--font-size-2xl);
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.placeholder-content p {
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary);
+  line-height: var(--line-height-relaxed);
+}
+
+/* ===== BREADCRUMB NAVIGATION ===== */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+}
+
+.breadcrumb-item {
+  color: var(--text-secondary);
+}
+
+.breadcrumb-item.active {
+  color: var(--primary-600);
+  font-weight: var(--font-weight-medium);
+}
+
+.breadcrumb-separator {
+  color: var(--text-tertiary);
+  font-size: var(--font-size-xs);
+}
+
+/* ===== BACK BUTTON ===== */
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+  margin-bottom: var(--space-6);
+}
+
+.back-button:hover {
+  background: var(--primary-50);
+  color: var(--primary-600);
+  border-color: var(--primary-200);
+  text-decoration: none;
+  transform: translateX(-2px);
+}
+
+.back-button::before {
+  content: "←";
+  font-size: var(--font-size-lg);
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablet styles */
+@media (max-width: 1024px) {
+  .module-content {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .module-title {
+    font-size: var(--font-size-3xl);
+  }
+
+  .module-description {
+    font-size: var(--font-size-lg);
+  }
+
+  .feature-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .module-content {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .module-header {
+    margin-bottom: var(--space-8);
+  }
+
+  .module-title {
+    font-size: var(--font-size-2xl);
+  }
+
+  .module-description {
+    font-size: var(--font-size-base);
+  }
+
+  .module-features {
+    padding: var(--space-4);
+  }
+
+  .module-placeholder {
+    padding: var(--space-6);
+  }
+
+  .placeholder-content h3 {
+    font-size: var(--font-size-xl);
+  }
+
+  .placeholder-content p {
+    font-size: var(--font-size-base);
+  }
+}
