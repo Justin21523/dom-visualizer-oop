@@ -9,12 +9,6 @@
 // Import main stylesheet
 import './styles/main.css';
 
-// Import core application
-import { DOMVisualizerApp } from '@core/DOMVisualizerApp.js';
-
-// Import error handling
-import { ErrorHandler } from '@core/ErrorHandler.js';
-
 /**
  * Application initialization configuration
  */
@@ -34,16 +28,11 @@ async function initializeApp() {
     // Show loading screen
     showLoadingScreen();
 
-    // Initialize error handler
-    const errorHandler = new ErrorHandler();
-    errorHandler.initialize();
-
     // Wait for DOM to be ready
     await waitForDOM();
 
-    // Initialize main application
-    const app = new DOMVisualizerApp(APP_CONFIG);
-    await app.initialize();
+    // Initialize basic functionality
+    await initializeBasicApp();
 
     // Hide loading screen and show app
     hideLoadingScreen();
@@ -58,6 +47,212 @@ async function initializeApp() {
   } catch (error) {
     console.error('❌ Failed to initialize application:', error);
     showErrorScreen(error);
+  }
+}
+
+/**
+ * Initialize basic application functionality
+ */
+async function initializeBasicApp() {
+  // Add basic event listeners
+  setupModuleNavigation();
+  setupThemeToggle();
+  setupSettingsModal();
+
+  console.log('✅ Basic app functionality initialized');
+}
+
+/**
+ * Setup module navigation
+ */
+function setupModuleNavigation() {
+  const moduleCards = document.querySelectorAll('.module-card');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  // Add click handlers for module cards
+  moduleCards.forEach(card => {
+    card.addEventListener('click', e => {
+      const module = card.dataset.module;
+      if (module) {
+        navigateToModule(module);
+      }
+    });
+  });
+
+  // Add click handlers for navigation links
+  navLinks.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const module = link.dataset.module;
+      if (module) {
+        navigateToModule(module);
+      }
+    });
+  });
+}
+
+/**
+ * Navigate to a specific module
+ * @param {string} moduleName - Name of the module to navigate to
+ */
+function navigateToModule(moduleName) {
+  console.log(`Navigating to ${moduleName} module`);
+
+  // Update URL
+  window.history.pushState({}, '', `#${moduleName}`);
+
+  // Update active navigation
+  updateActiveNavigation(moduleName);
+
+  // Show module placeholder
+  showModulePlaceholder(moduleName);
+}
+
+/**
+ * Update active navigation state
+ * @param {string} moduleName - Active module name
+ */
+function updateActiveNavigation(moduleName) {
+  // Remove active class from all nav links
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.classList.remove('active');
+  });
+
+  // Add active class to current module
+  const activeLink = document.querySelector(`[data-module="${moduleName}"]`);
+  if (activeLink) {
+    activeLink.classList.add('active');
+  }
+}
+
+/**
+ * Show module placeholder content
+ * @param {string} moduleName - Module name to display
+ */
+function showModulePlaceholder(moduleName) {
+  const moduleContainer = document.getElementById('module-container');
+
+  const moduleInfo = {
+    foundation: {
+      title: 'Foundation Module',
+      description: 'Learn DOM basics and viewport relationships',
+      features: [
+        'DOM Metrics Visualization',
+        'Viewport Management',
+        'Scroll Tracking'
+      ]
+    },
+    events: {
+      title: 'Events Module',
+      description: 'Master event flow and delegation patterns',
+      features: [
+        'Event Flow Visualization',
+        'Event Delegation Demo',
+        'Custom Events'
+      ]
+    },
+    dom: {
+      title: 'DOM Module',
+      description: 'Manipulate and inspect DOM elements',
+      features: ['DOM Tree Editor', 'Attribute Inspector', 'Selector Tester']
+    },
+    boxmodel: {
+      title: 'Box Model Module',
+      description: 'Visualize CSS layout and positioning',
+      features: ['3D Box Model', 'Layout Comparator', 'Responsive Simulator']
+    },
+    performance: {
+      title: 'Performance Module',
+      description: 'Monitor and optimize rendering performance',
+      features: ['FPS Monitor', 'Memory Leak Detector', 'Render Pipeline']
+    },
+    learning: {
+      title: 'Learning Module',
+      description: 'Test your skills with interactive challenges',
+      features: ['Challenge Engine', 'Progress Tracker', 'Achievement System']
+    }
+  };
+
+  const info = moduleInfo[moduleName] || {
+    title: 'Module',
+    description: 'Coming soon...',
+    features: []
+  };
+
+  moduleContainer.innerHTML = `
+    <div class="module-content">
+      <div class="module-header">
+        <h1 class="module-title">${info.title}</h1>
+        <p class="module-description">${info.description}</p>
+      </div>
+
+      <div class="module-features">
+        <h3>Features:</h3>
+        <ul class="feature-list">
+          ${info.features.map(feature => `<li>${feature}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="module-placeholder">
+        <div class="placeholder-content">
+          <h3>🚧 Under Development</h3>
+          <p>This module is currently being built. Check back soon for interactive content!</p>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Setup theme toggle functionality
+ */
+function setupThemeToggle() {
+  const themeToggle = document.querySelector('.theme-toggle');
+
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-theme');
+      localStorage.setItem(
+        'theme',
+        document.body.classList.contains('dark-theme') ? 'dark' : 'light'
+      );
+    });
+
+    // Restore saved theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      document.body.classList.add('dark-theme');
+    }
+  }
+}
+
+/**
+ * Setup settings modal functionality
+ */
+function setupSettingsModal() {
+  const settingsBtn = document.querySelector('.settings-btn');
+  const settingsModal = document.getElementById('settings-modal');
+  const modalClose = settingsModal?.querySelector('.modal-close');
+  const modalOverlay = settingsModal?.querySelector('.modal-overlay');
+
+  if (settingsBtn && settingsModal) {
+    settingsBtn.addEventListener('click', () => {
+      settingsModal.classList.remove('hidden');
+    });
+
+    const closeModal = () => {
+      settingsModal.classList.add('hidden');
+    };
+
+    modalClose?.addEventListener('click', closeModal);
+    modalOverlay?.addEventListener('click', closeModal);
+
+    // Close on escape key
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && !settingsModal.classList.contains('hidden')) {
+        closeModal();
+      }
+    });
   }
 }
 
@@ -175,7 +370,7 @@ async function initializeDevTools() {
       updateFPS();
 
       // Initialize memory usage monitor
-      if ('memory' in performance) {
+      if (performance.memory) {
         setInterval(() => {
           const memoryInfo = performance.memory;
           const memoryUsage = Math.round(
@@ -191,8 +386,15 @@ async function initializeDevTools() {
       // Initialize state debugger
       const stateDebug = document.getElementById('state-debug');
       if (stateDebug) {
-        // This will be updated by the StateManager
-        stateDebug.textContent = 'State debugging initialized...';
+        stateDebug.textContent = JSON.stringify(
+          {
+            currentModule: 'welcome',
+            theme: localStorage.getItem('theme') || 'light',
+            initialized: true
+          },
+          null,
+          2
+        );
       }
 
       // Toggle dev panel
@@ -200,9 +402,14 @@ async function initializeDevTools() {
       const devPanel = devTools.querySelector('.dev-panel');
 
       if (devToggle && devPanel) {
+        let panelVisible = false;
         devToggle.addEventListener('click', () => {
-          devPanel.classList.toggle('hidden');
+          panelVisible = !panelVisible;
+          devPanel.style.display = panelVisible ? 'block' : 'none';
         });
+
+        // Initially hide the panel
+        devPanel.style.display = 'none';
       }
     }
   } catch (error) {
@@ -239,65 +446,51 @@ window.addEventListener('error', event => {
 });
 
 /**
- * Handle service worker registration (for PWA functionality)
- */
-async function registerServiceWorker() {
-  if ('serviceWorker' in navigator && import.meta.env.PROD) {
-    try {
-      const registration = await navigator.serviceWorker.register('/sw.js');
-      console.log('Service Worker registered:', registration);
-    } catch (error) {
-      console.warn('Service Worker registration failed:', error);
-    }
-  }
-}
-
-/**
  * Initialize performance monitoring
  */
 function initializePerformanceMonitoring() {
   // Mark the start of app initialization
-  performance.mark('app-init-start');
+  if (performance.mark) {
+    performance.mark('app-init-start');
+  }
 
   // Measure app initialization time
   window.addEventListener('load', () => {
-    performance.mark('app-init-end');
-    performance.measure('app-initialization', 'app-init-start', 'app-init-end');
-
-    const measures = performance.getEntriesByName('app-initialization');
-    if (measures.length > 0) {
-      console.log(
-        `App initialization took: ${measures[0].duration.toFixed(2)}ms`
+    if (performance.mark && performance.measure) {
+      performance.mark('app-init-end');
+      performance.measure(
+        'app-initialization',
+        'app-init-start',
+        'app-init-end'
       );
+
+      const measures = performance.getEntriesByName('app-initialization');
+      if (measures.length > 0) {
+        console.log(
+          `App initialization took: ${measures[0].duration.toFixed(2)}ms`
+        );
+      }
     }
   });
-
-  // Monitor Core Web Vitals if available
-  if ('web-vitals' in window) {
-    import('web-vitals')
-      .then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-        getCLS(console.log);
-        getFID(console.log);
-        getFCP(console.log);
-        getLCP(console.log);
-        getTTFB(console.log);
-      })
-      .catch(() => {
-        // web-vitals not available, continue without it
-      });
-  }
 }
 
 /**
- * Initialize analytics (only in production)
+ * Handle browser back/forward navigation
  */
-async function initializeAnalytics() {
-  if (APP_CONFIG.enableAnalytics) {
-    // Initialize analytics tracking here
-    // This would typically be Google Analytics, Mixpanel, etc.
-    console.log('Analytics initialized');
+window.addEventListener('popstate', event => {
+  const hash = window.location.hash.slice(1);
+  if (hash) {
+    navigateToModule(hash);
+  } else {
+    // Show welcome screen
+    const moduleContainer = document.getElementById('module-container');
+    const welcomeScreen = document.getElementById('welcome-screen');
+    if (moduleContainer && welcomeScreen) {
+      moduleContainer.innerHTML = '';
+      moduleContainer.appendChild(welcomeScreen);
+    }
   }
-}
+});
 
 /**
  * Main initialization sequence
@@ -306,14 +499,14 @@ async function main() {
   // Initialize performance monitoring
   initializePerformanceMonitoring();
 
-  // Register service worker
-  await registerServiceWorker();
-
-  // Initialize analytics
-  await initializeAnalytics();
-
   // Initialize the main application
   await initializeApp();
+
+  // Handle initial URL hash
+  const hash = window.location.hash.slice(1);
+  if (hash) {
+    setTimeout(() => navigateToModule(hash), 100);
+  }
 }
 
 // Start the application
@@ -327,6 +520,7 @@ if (APP_CONFIG.development) {
   window.__DOM_VISUALIZER_DEBUG__ = {
     config: APP_CONFIG,
     reinitialize: initializeApp,
-    showError: showErrorScreen
+    showError: showErrorScreen,
+    navigateToModule
   };
 }
