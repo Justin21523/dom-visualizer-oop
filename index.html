@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Interactive JavaScript DOM & Event Learning Platform - Learn browser concepts through visual demonstrations" />
+  <meta name="keywords" content="javascript, dom, education, visualization, learning, browser-apis, oop, interactive" />
+  <meta name="author" content="DOM Visualizer Team" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dom-visualizer.dev/" />
+  <meta property="og:title" content="DOM Visualizer OOP - Interactive Learning Platform" />
+  <meta property="og:description" content="Master JavaScript DOM manipulation and browser APIs through interactive visualizations" />
+  <meta property="og:image" content="/assets/images/og-image.png" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:url" content="https://dom-visualizer.dev/" />
+  <meta property="twitter:title" content="DOM Visualizer OOP - Interactive Learning Platform" />
+  <meta property="twitter:description" content="Master JavaScript DOM manipulation and browser APIs through interactive visualizations" />
+  <meta property="twitter:image" content="/assets/images/twitter-image.png" />
+
+  <!-- Favicons -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- Theme -->
+  <meta name="theme-color" content="#3b82f6" />
+  <meta name="color-scheme" content="light dark" />
+
+  <!-- Preload critical resources -->
+  <link rel="preload" href="/assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/src/styles/core/variables.css" as="style" />
+
+  <!-- Security -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https:; font-src 'self' data:;" />
+
+  <title>DOM Visualizer OOP - Interactive Learning Platform</title>
+</head>
+
+<body>
+  <!-- App container -->
+  <div id="app" class="app">
+    <!-- Loading screen -->
+    <div id="loading-screen" class="loading-screen">
+      <div class="loading-spinner">
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+        <div class="spinner-ring"></div>
+      </div>
+      <p class="loading-text">Initializing DOM Visualizer...</p>
+    </div>
+
+    <!-- Error boundary -->
+    <div id="error-boundary" class="error-boundary hidden">
+      <div class="error-content">
+        <h2>Oops! Something went wrong</h2>
+        <p class="error-message"></p>
+        <button class="error-retry-btn">Retry</button>
+        <details class="error-details">
+          <summary>Technical Details</summary>
+          <pre class="error-stack"></pre>
+        </details>
+      </div>
+    </div>
+
+    <!-- Main application header -->
+    <header id="app-header" class="app-header hidden">
+      <div class="header-container">
+        <div class="header-brand">
+          <img src="/assets/images/logo.svg" alt="DOM Visualizer" class="brand-logo" />
+          <span class="brand-text">DOM Visualizer</span>
+        </div>
+
+        <nav class="header-nav">
+          <ul class="nav-list">
+            <li class="nav-item">
+              <a href="#foundation" class="nav-link" data-module="foundation">Foundation</a>
+            </li>
+            <li class="nav-item">
+              <a href="#events" class="nav-link" data-module="events">Events</a>
+            </li>
+            <li class="nav-item">
+              <a href="#dom" class="nav-link" data-module="dom">DOM</a>
+            </li>
+            <li class="nav-item">
+              <a href="#boxmodel" class="nav-link" data-module="boxmodel">Box Model</a>
+            </li>
+            <li class="nav-item">
+              <a href="#performance" class="nav-link" data-module="performance">Performance</a>
+            </li>
+            <li class="nav-item">
+              <a href="#learning" class="nav-link" data-module="learning">Challenges</a>
+            </li>
+          </ul>
+        </nav>
+
+        <div class="header-controls">
+          <button class="theme-toggle" aria-label="Toggle theme">
+            <span class="theme-icon light-icon">☀️</span>
+            <span class="theme-icon dark-icon">🌙</span>
+          </button>
+          <button class="settings-btn" aria-label="Open settings">⚙️</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content area -->
+    <main id="app-main" class="app-main hidden">
+      <!-- Module container - dynamically populated -->
+      <div id="module-container" class="module-container">
+        <!-- Welcome screen -->
+        <div id="welcome-screen" class="welcome-screen">
+          <div class="welcome-content">
+            <h1 class="welcome-title">Welcome to DOM Visualizer</h1>
+            <p class="welcome-subtitle">
+              Master JavaScript DOM manipulation and browser APIs through interactive visualizations
+            </p>
+
+            <div class="welcome-modules">
+              <div class="module-card" data-module="foundation">
+                <div class="module-icon">🏗️</div>
+                <h3 class="module-title">Foundation</h3>
+                <p class="module-description">Learn DOM basics and viewport relationships</p>
+              </div>
+
+              <div class="module-card" data-module="events">
+                <div class="module-icon">⚡</div>
+                <h3 class="module-title">Events</h3>
+                <p class="module-description">Master event flow and delegation patterns</p>
+              </div>
+
+              <div class="module-card" data-module="dom">
+                <div class="module-icon">🌳</div>
+                <h3 class="module-title">DOM</h3>
+                <p class="module-description">Manipulate and inspect DOM elements</p>
+              </div>
+
+              <div class="module-card" data-module="boxmodel">
+                <div class="module-icon">📦</div>
+                <h3 class="module-title">Box Model</h3>
+                <p class="module-description">Visualize CSS layout and positioning</p>
+              </div>
+
+              <div class="module-card" data-module="performance">
+                <div class="module-icon">🚀</div>
+                <h3 class="module-title">Performance</h3>
+                <p class="module-description">Monitor and optimize rendering performance</p>
+              </div>
+
+              <div class="module-card" data-module="learning">
+                <div class="module-icon">🎯</div>
+                <h3 class="module-title">Challenges</h3>
+                <p class="module-description">Test your skills with interactive challenges</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="app-footer" class="app-footer hidden">
+      <div class="footer-container">
+        <div class="footer-info">
+          <p>&copy; 2024 DOM Visualizer OOP. Educational platform for learning browser concepts.</p>
+        </div>
+        <div class="footer-links">
+          <a href="#about" class="footer-link">About</a>
+          <a href="#docs" class="footer-link">Documentation</a>
+          <a href="#github" class="footer-link">GitHub</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Toast notifications container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Settings modal -->
+  <div id="settings-modal" class="modal hidden">
+    <div class="modal-overlay"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Settings</h2>
+        <button class="modal-close" aria-label="Close settings">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label class="setting-label">Theme</label>
+          <select class="setting-select" id="theme-select">
+            <option value="auto">Auto</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+            <option value="high-contrast">High Contrast</option>
+          </select>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">Animation Speed</label>
+          <input type="range" class="setting-slider" id="animation-speed" min="0.5" max="2" step="0.1" value="1" />
+          <span class="setting-value">1x</span>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">
+            <input type="checkbox" class="setting-checkbox" id="reduce-motion" />
+            Reduce motion
+          </label>
+        </div>
+
+        <div class="setting-group">
+          <label class="setting-label">
+            <input type="checkbox" class="setting-checkbox" id="show-fps" />
+            Show FPS counter
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Development tools (only in dev mode) -->
+  <div id="dev-tools" class="dev-tools hidden">
+    <button class="dev-toggle">🔧</button>
+    <div class="dev-panel">
+      <div class="dev-section">
+        <h3>Performance</h3>
+        <div class="dev-metric">FPS: <span id="fps-counter">60</span></div>
+        <div class="dev-metric">Memory: <span id="memory-usage">0 MB</span></div>
+      </div>
+      <div class="dev-section">
+        <h3>State</h3>
+        <pre id="state-debug"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main application script -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

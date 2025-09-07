@@ -1,0 +1,63 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "preserve",
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@core/*": ["src/core/*"],
+      "@modules/*": ["src/modules/*"],
+      "@components/*": ["src/components/*"],
+      "@utils/*": ["src/utils/*"],
+      "@styles/*": ["src/styles/*"],
+      "@constants/*": ["src/constants/*"],
+      "@types/*": ["src/types/*"],
+      "@tests/*": ["tests/*"]
+    },
+
+    "types": [
+      "vite/client",
+      "@types/dom",
+      "vitest/globals"
+    ]
+  },
+
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.js",
+    "tests/**/*.ts",
+    "tests/**/*.js",
+    "*.config.ts",
+    "*.config.js"
+  ],
+
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "storybook-static",
+    "**/*.stories.js",
+    "**/*.stories.ts"
+  ]
+}
