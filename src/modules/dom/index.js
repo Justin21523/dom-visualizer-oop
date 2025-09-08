@@ -4,8 +4,8 @@
  * This file serves as the main entry point for the DOM manipulation and analysis
  * learning module, providing exports for all components and module metadata.
  *
- * @fileoverview DOM Module main entry point
- * @version 1.0.0
+ * @fileoverview DOM Module main entry point with StyleComputer integration
+ * @version 1.1.0
  * @author DOM Visualizer OOP Team
  */
 
@@ -31,7 +31,7 @@ export const moduleMetadata = {
   title: 'DOM Manipulation & Analysis',
   description:
     'Interactive tools for learning DOM tree manipulation, attribute inspection, and CSS selector testing',
-  version: '1.0.0',
+  version: '1.1.0',
 
   // Module categorization
   category: 'core',
@@ -43,6 +43,7 @@ export const moduleMetadata = {
     'Understand DOM tree structure and navigation',
     'Master element attribute manipulation',
     'Learn CSS selector optimization techniques',
+    'Analyze computed styles and inheritance',
     'Practice real-time DOM inspection and modification',
     'Develop skills in performance-conscious DOM operations'
   ],
@@ -90,6 +91,119 @@ export const moduleMetadata = {
       icon: '👁️',
       enabled: true
     },
+    // Utility features
+    domDiffer: {
+      name: 'DOM Differ',
+      description: 'Compare DOM states and visualize changes',
+      icon: '📊',
+      enabled: true,
+      component: 'DOMDiffer'
+    },
+
+    elementManipulator: {
+      name: 'Element Manipulator',
+      description: 'Safe DOM element creation and modification tools',
+      icon: '🔧',
+      enabled: true,
+      component: 'ElementManipulator'
+    },
+
+    treeTraverser: {
+      name: 'Tree Traverser',
+      description: 'Advanced DOM tree navigation and search utilities',
+      icon: '🗺️',
+      enabled: true,
+      component: 'TreeTraverser'
+    }
+  },
+
+  // Learning paths and progression
+  learningPaths: {
+    beginner: {
+      name: 'DOM Basics',
+      description: 'Start with fundamental DOM concepts',
+      steps: [
+        'treeVisualization',
+        'attributeInspection',
+        'elementManipulator',
+        'selectorTesting'
+      ],
+      estimatedTime: '30 minutes'
+    },
+
+    intermediate: {
+      name: 'Advanced DOM Operations',
+      description: 'Learn advanced manipulation and analysis',
+      steps: [
+        'selectorTesting',
+        'styleComputation',
+        'mutationObserver',
+        'domDiffer'
+      ],
+      estimatedTime: '45 minutes'
+    },
+
+    advanced: {
+      name: 'Performance & Optimization',
+      description: 'Master performance-conscious DOM operations',
+      steps: [
+        'styleComputation',
+        'domDiffer',
+        'treeTraverser',
+        'mutationObserver'
+      ],
+      estimatedTime: '60 minutes'
+    }
+  },
+
+  // Configuration presets
+  presets: {
+    default: {
+      name: 'Default Configuration',
+      description: 'Balanced settings for general learning',
+      config: {
+        enableAllFeatures: true,
+        performanceMonitoring: true,
+        liveUpdates: true,
+        validationEnabled: true
+      }
+    },
+
+    performance: {
+      name: 'Performance Focus',
+      description: 'Optimized for performance analysis and monitoring',
+      config: {
+        enableAllFeatures: true,
+        performanceMonitoring: true,
+        detailedMetrics: true,
+        trackChanges: true,
+        liveUpdates: false
+      }
+    },
+
+    educational: {
+      name: 'Educational Mode',
+      description: 'Enhanced explanations and guided learning',
+      config: {
+        enableAllFeatures: true,
+        showExplanations: true,
+        guidedMode: true,
+        stepByStep: true,
+        liveUpdates: true
+      }
+    },
+
+    developer: {
+      name: 'Developer Tools',
+      description: 'Advanced features for experienced developers',
+      config: {
+        enableAllFeatures: true,
+        advancedFeatures: true,
+        debugMode: true,
+        exportCapabilities: true,
+        customization: true
+      }
+    },
 
     // Advanced features
     performanceMonitoring: {
@@ -113,6 +227,253 @@ export const moduleMetadata = {
       icon: '♿',
       enabled: true
     }
+  },
+
+  // Code examples and templates
+  examples: {
+    basicManipulation: {
+      title: 'Basic DOM Manipulation',
+      description: 'Simple element creation and modification',
+      code: `
+// Create a new element
+const div = document.createElement('div');
+div.id = 'my-element';
+div.className = 'demo-element';
+div.textContent = 'Hello, DOM!';
+
+// Add to document
+document.body.appendChild(div);
+
+// Modify attributes
+div.setAttribute('data-created', Date.now());
+div.style.backgroundColor = '#e3f2fd';
+div.style.padding = '10px';
+div.style.borderRadius = '4px';
+      `,
+      category: 'beginner'
+    },
+
+    selectorOptimization: {
+      title: 'CSS Selector Optimization',
+      description: 'Efficient selector patterns and performance',
+      code: `
+// Efficient selectors
+const elements = document.querySelectorAll('.container > .item:nth-child(odd)');
+
+// Avoid inefficient patterns
+// BAD: document.querySelectorAll('* .item');
+// GOOD: document.querySelectorAll('.container .item');
+
+// Use specific context
+const container = document.getElementById('main-container');
+const items = container.querySelectorAll('.item');
+      `,
+      category: 'intermediate'
+    },
+
+    styleAnalysis: {
+      title: 'Computed Style Analysis',
+      description: 'Understanding CSS cascade and inheritance',
+      code: `
+const element = document.querySelector('#target');
+const styles = window.getComputedStyle(element);
+
+// Analyze specific properties
+console.log('Color:', styles.color);
+console.log('Font Size:', styles.fontSize);
+console.log('Margin:', styles.margin);
+
+// Check inheritance
+const parent = element.parentElement;
+const parentStyles = window.getComputedStyle(parent);
+console.log('Inherited from parent:', {
+  color: parentStyles.color,
+  fontFamily: parentStyles.fontFamily
+});
+      `,
+      category: 'intermediate'
+    },
+
+    mutationObserving: {
+      title: 'Mutation Observer Usage',
+      description: 'Monitoring DOM changes efficiently',
+      code: `
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    console.log('Mutation type:', mutation.type);
+    console.log('Target:', mutation.target);
+
+    if (mutation.type === 'childList') {
+      console.log('Added nodes:', mutation.addedNodes);
+      console.log('Removed nodes:', mutation.removedNodes);
+    }
+  });
+});
+
+observer.observe(document.body, {
+  childList: true,
+  attributes: true,
+  subtree: true
+});
+      `,
+      category: 'advanced'
+    },
+
+    performanceOptimization: {
+      title: 'Performance-Conscious DOM Operations',
+      description: 'Optimizing DOM operations for better performance',
+      code: `
+// Batch DOM operations
+const fragment = document.createDocumentFragment();
+
+for (let i = 0; i < 100; i++) {
+  const div = document.createElement('div');
+  div.textContent = \`Item \${i}\`;
+  fragment.appendChild(div);
+}
+
+// Single DOM update
+document.getElementById('container').appendChild(fragment);
+
+// Use requestAnimationFrame for animations
+function updateElement() {
+  const element = document.getElementById('animated');
+  element.style.transform = \`translateX(\${Date.now() % 200}px)\`;
+  requestAnimationFrame(updateElement);
+}
+requestAnimationFrame(updateElement);
+      `,
+      category: 'advanced'
+    }
+  },
+
+  // Integration utilities
+  utils: {
+    /**
+     * Create DOM module instance with specific configuration
+     * @param {HTMLElement} container - Container element
+     * @param {Object} config - Configuration options
+     * @returns {DOMModule} Module instance
+     */
+    createInstance(container, config = {}) {
+      const presetConfig = this.presets[config.preset] || this.presets.default;
+      const finalConfig = { ...presetConfig.config, ...config };
+
+      return new DOMModule(container, finalConfig);
+    },
+
+    /**
+     * Get recommended learning path based on user level
+     * @param {string} level - User experience level
+     * @returns {Object} Learning path configuration
+     */
+    getLearningPath(level = 'beginner') {
+      return this.learningPaths[level] || this.learningPaths.beginner;
+    },
+
+    /**
+     * Validate module configuration
+     * @param {Object} config - Configuration to validate
+     * @returns {Object} Validation result
+     */
+    validateConfig(config) {
+      const errors = [];
+      const warnings = [];
+
+      // Check required properties
+      if (!config.container) {
+        errors.push('Container element is required');
+      }
+
+      // Check feature compatibility
+      if (config.liveUpdates && !config.performanceMonitoring) {
+        warnings.push(
+          'Live updates without performance monitoring may impact performance'
+        );
+      }
+
+      return {
+        isValid: errors.length === 0,
+        errors,
+        warnings
+      };
+    },
+
+    /**
+     * Get component by name
+     * @param {string} componentName - Name of component
+     * @returns {Class} Component class
+     */
+    getComponent(componentName) {
+      const components = {
+        DOMModule,
+        NodeTreeEditor,
+        AttributeInspector,
+        SelectorTester,
+        StyleComputer,
+        DOMDiffer,
+        ElementManipulator,
+        TreeTraverser,
+        MutationObserverDemo
+      };
+
+      return components[componentName] || null;
+    }
+  },
+
+  // Educational resources
+  resources: {
+    documentation: {
+      quickStart: '/docs/dom/quick-start',
+      apiReference: '/docs/dom/api',
+      examples: '/docs/dom/examples',
+      bestPractices: '/docs/dom/best-practices'
+    },
+
+    tutorials: [
+      {
+        title: 'DOM Fundamentals',
+        url: '/tutorials/dom-fundamentals',
+        difficulty: 'beginner',
+        duration: '15 minutes'
+      },
+      {
+        title: 'CSS Selector Mastery',
+        url: '/tutorials/css-selectors',
+        difficulty: 'intermediate',
+        duration: '20 minutes'
+      },
+      {
+        title: 'Style Computation Deep Dive',
+        url: '/tutorials/computed-styles',
+        difficulty: 'intermediate',
+        duration: '25 minutes'
+      },
+      {
+        title: 'Performance Optimization',
+        url: '/tutorials/dom-performance',
+        difficulty: 'advanced',
+        duration: '30 minutes'
+      }
+    ],
+
+    references: [
+      {
+        title: 'MDN DOM API Reference',
+        url: 'https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model',
+        type: 'external'
+      },
+      {
+        title: 'CSS Selector Specification',
+        url: 'https://www.w3.org/TR/selectors-4/',
+        type: 'external'
+      },
+      {
+        title: 'Web Performance Guidelines',
+        url: 'https://web.dev/performance/',
+        type: 'external'
+      }
+    ]
   },
 
   // Educational content structure
@@ -305,57 +666,6 @@ export const moduleMetadata = {
       'dom:tree-updated',
       'dom:selector-tested',
       'dom:attribute-changed'
-    ]
-  },
-
-  // Resources and documentation
-  resources: {
-    documentation: [
-      {
-        title: 'MDN DOM Documentation',
-        url: 'https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model',
-        type: 'external'
-      },
-      {
-        title: 'CSS Selectors Reference',
-        url: 'https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors',
-        type: 'external'
-      },
-      {
-        title: 'DOM Performance Best Practices',
-        url: '/docs/dom-performance',
-        type: 'internal'
-      }
-    ],
-
-    tutorials: [
-      {
-        title: 'Getting Started with DOM Manipulation',
-        duration: '15 minutes',
-        level: 'beginner',
-        path: '/tutorials/dom-basics'
-      },
-      {
-        title: 'Advanced CSS Selector Techniques',
-        duration: '25 minutes',
-        level: 'intermediate',
-        path: '/tutorials/css-selectors'
-      }
-    ],
-
-    examples: [
-      {
-        title: 'Dynamic Form Builder',
-        description: 'Build forms dynamically using DOM manipulation',
-        complexity: 'intermediate',
-        path: '/examples/dynamic-forms'
-      },
-      {
-        title: 'Real-time Content Filter',
-        description: 'Filter content using CSS selectors and DOM updates',
-        complexity: 'advanced',
-        path: '/examples/content-filter'
-      }
     ]
   }
 };
@@ -774,10 +1084,7 @@ export const moduleUtils = {
   }
 };
 
-// Export main module class as default
-export default DOMModule;
-
-// Export all components for individual use
+// Export individual components
 export {
   DOMModule,
   NodeTreeEditor,
@@ -788,6 +1095,31 @@ export {
   ElementManipulator,
   TreeTraverser,
   MutationObserverDemo
+};
+
+// Default export for module
+export default {
+  // Core module
+  DOMModule,
+
+  // Components
+  NodeTreeEditor,
+  AttributeInspector,
+  SelectorTester,
+  StyleComputer,
+  DOMDiffer,
+  ElementManipulator,
+  TreeTraverser,
+  MutationObserverDemo,
+
+  // Metadata and utilities
+  metadata: moduleMetadata,
+
+  // Convenience methods
+  create: moduleMetadata.utils.createInstance.bind(moduleMetadata),
+  getLearningPath: moduleMetadata.utils.getLearningPath.bind(moduleMetadata),
+  validateConfig: moduleMetadata.utils.validateConfig.bind(moduleMetadata),
+  getComponent: moduleMetadata.utils.getComponent.bind(moduleMetadata)
 };
 
 // Export module registration function for main application
