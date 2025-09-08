@@ -69,7 +69,14 @@ async function initializeApp() {
 
 /**
  * Register all available modules
- */
+
+
+
+
+
+
+
+
 async function registerModules() {
   try {
     // Register Foundation Module
