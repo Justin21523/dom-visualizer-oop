@@ -4,35 +4,35 @@
  */
 
 /* ===== CORE STYLES ===== */
-@import './core/reset.css';
-@import './core/variables.css';
+@import "./core/reset.css";
+@import "./core/variables.css";
 
 /* ===== LAYOUT STYLES ===== */
-@import './layout/header.css';
-@import './layout/footer.css';
-@import './layout/navigation.css';
+@import "./layout/header.css";
+@import "./layout/footer.css";
+@import "./layout/navigation.css";
 
 /* ===== COMPONENT STYLES ===== */
-@import './components/buttons.css';
-@import './components/forms.css';
-@import './components/modals.css';
-@import './components/toast.css';
+@import "./components/buttons.css";
+@import "./components/forms.css";
+@import "./components/modals.css";
+@import "./components/toast.css";
 
 /* ===== MODULE STYLES ===== */
-@import './modules/foundation.css';
-@import './modules/events.css';
-@import './modules/dom.css';
-@import './modules/boxmodel.css';
-@import './modules/performance.css';
-@import './modules/learning.css';
+@import "./modules/foundation.css";
+@import "./modules/events.css";
+@import "./modules/dom.css";
+@import "./modules/boxmodel.css";
+@import "./modules/performance.css";
+@import "./modules/learning.css";
 
 /* ===== THEME STYLES ===== */
-@import './themes/light.css';
-@import './themes/dark.css';
-@import './themes/high-contrast.css';
+@import "./themes/light.css";
+@import "./themes/dark.css";
+@import "./themes/high-contrast.css";
 
 /* ===== TUTORIAL AND ENHANCEMENT STYLES ===== */
-@import './tutorial.css';
+@import "./tutorial.css";
 
 /* ===== MAIN APPLICATION STYLES ===== */
 
@@ -46,7 +46,9 @@
   background: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-family-sans);
-  transition: background-color var(--transition-fast), color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 /* ===== LOADING SCREEN ENHANCEMENTS ===== */
@@ -111,13 +113,22 @@
 }
 
 @keyframes loading-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes loading-pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 /* ===== ERROR BOUNDARY ENHANCEMENTS ===== */
@@ -244,12 +255,24 @@
   animation: fadeInUp 0.6s ease-out both;
 }
 
-.module-card:nth-child(1) { animation-delay: 0.3s; }
-.module-card:nth-child(2) { animation-delay: 0.4s; }
-.module-card:nth-child(3) { animation-delay: 0.5s; }
-.module-card:nth-child(4) { animation-delay: 0.6s; }
-.module-card:nth-child(5) { animation-delay: 0.7s; }
-.module-card:nth-child(6) { animation-delay: 0.8s; }
+.module-card:nth-child(1) {
+  animation-delay: 0.3s;
+}
+.module-card:nth-child(2) {
+  animation-delay: 0.4s;
+}
+.module-card:nth-child(3) {
+  animation-delay: 0.5s;
+}
+.module-card:nth-child(4) {
+  animation-delay: 0.6s;
+}
+.module-card:nth-child(5) {
+  animation-delay: 0.7s;
+}
+.module-card:nth-child(6) {
+  animation-delay: 0.8s;
+}
 
 .module-card::before {
   content: "";
@@ -546,8 +569,12 @@
 
 /* ===== ANIMATIONS ===== */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes fadeInUp {
@@ -595,7 +622,8 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -822,7 +850,11 @@
 
 /* ===== DARK THEME OVERRIDES ===== */
 .dark-theme .loading-screen {
-  background: linear-gradient(135deg, var(--secondary-800), var(--secondary-900));
+  background: linear-gradient(
+    135deg,
+    var(--secondary-800),
+    var(--secondary-900)
+  );
 }
 
 .dark-theme .welcome-title {
@@ -1166,9 +1198,6 @@
   .dev-panel {
     right: -20px;
     min-width: 200px;
-  }
-}-base);
-    margin-bottom: var(--space-8);
   }
 
   .module-card {
@@ -1368,7 +1397,11 @@
 
 /* ===== DARK THEME OVERRIDES ===== */
 .dark-theme .loading-screen {
-  background: linear-gradient(135deg, var(--secondary-800), var(--secondary-900));
+  background: linear-gradient(
+    135deg,
+    var(--secondary-800),
+    var(--secondary-900)
+  );
 }
 
 .dark-theme .welcome-title {
@@ -1713,8 +1746,6 @@
     right: -20px;
     min-width: 200px;
   }
-}-lg);
-  }
 }
 
 /* Mobile styles */
@@ -1733,4 +1764,6 @@
   }
 
   .welcome-subtitle {
-    font-size: var(--font-size
+    font-size: var(--font-size);
+  }
+}
