@@ -22,7 +22,10 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "docs:generate": "node scripts/generate-docs.js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "demo:dev": "npm --prefix demo-app run dev",
+    "demo:build": "npm --prefix demo-app run build",
+    "demo:preview": "npm --prefix demo-app run preview"
   },
   "keywords": [
     "javascript",
